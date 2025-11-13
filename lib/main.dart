@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
-// 1. MODEL DATA
-// Membuat class khusus untuk merepresentasikan data.
-class Daerah {
+
+class Mahasiswa {
   final String nama;
-  final String kode;
-
-  const Daerah({required this.nama, required this.kode});
+  final String nim;
+  final String jurusan;
+  final String fotoUrl; 
+  Mahasiswa({
+    required this.nama,
+    required this.nim,
+    required this.jurusan,
+    this.fotoUrl = '',
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -17,102 +24,114 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Menghilangkan banner debug
-      title: 'Refactored ListView',
-      // Menggunakan Material 3 untuk tampilan yang lebih modern
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        appBarTheme: const AppBarTheme(centerTitle: true, elevation: 2),
-      ),
-      home: const DaerahListPage(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const DaftarMahasiswaPage(),
     );
   }
 }
 
-class DaerahListPage extends StatelessWidget {
-  const DaerahListPage({super.key});
+class DaftarMahasiswaPage extends StatefulWidget {
+  const DaftarMahasiswaPage({super.key});
 
-  // Data statis dipisah di sini (seolah-olah dari database/API)
-  static const List<Daerah> _dataDaerah = [
-    Daerah(nama: 'Kelurahan Sukamaju', kode: 'SKM'),
-    Daerah(nama: 'Kelurahan Mekarwangi', kode: 'MKW'),
-    Daerah(nama: 'Kelurahan Cibadak', kode: 'CBD'),
-    Daerah(nama: 'Kelurahan Babakan', kode: 'BBK'),
-    Daerah(nama: 'Kelurahan Ciherang', kode: 'CHG'),
-    Daerah(nama: 'Kelurahan Bojonggede', kode: 'BJG'),
-    Daerah(nama: 'Kelurahan Ciparay', kode: 'CPR'),
-    Daerah(nama: 'Kelurahan Pasirkaliki', kode: 'PSK'),
-    Daerah(nama: 'Kelurahan Karangmulya', kode: 'KRM'),
-    Daerah(nama: 'Kelurahan Sukaraja', kode: 'SKR'),
+  @override
+  State<DaftarMahasiswaPage> createState() => _DaftarMahasiswaPageState();
+}
+
+class _DaftarMahasiswaPageState extends State<DaftarMahasiswaPage> {
+
+  final List<Mahasiswa> listMahasiswa = [
+    Mahasiswa(
+      nama: "Andi Saputra",
+      nim: "2023001",
+      jurusan: "Teknik Informatika",
+    ),
+    Mahasiswa(
+      nama: "Budi Santoso",
+      nim: "2023002",
+      jurusan: "Sistem Informasi",
+    ),
+    Mahasiswa(
+      nama: "Citra Lestari",
+      nim: "2023003",
+      jurusan: "Teknik Komputer",
+    ),
+    Mahasiswa(
+      nama: "Dewi Anggraini",
+      nim: "2023004",
+      jurusan: "Manajemen Informatika",
+    ),
+    Mahasiswa(
+      nama: "Eko Prasetyo",
+      nim: "2023005",
+      jurusan: "Teknik Informatika",
+    ),
+    Mahasiswa(
+      nama: "Fajar Nugraha",
+      nim: "2023006",
+      jurusan: "Sistem Informasi",
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar 10 Wilayah')),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(
-          16,
-        ), // Memberikan jarak dari pinggir layar
-        itemCount: _dataDaerah.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          // Memanggil widget yang sudah di-extract
-          return DaerahCard(daerah: _dataDaerah[index], index: index);
-        },
+      appBar: AppBar(
+        title: const Text("Daftar Mahasiswa"),
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
       ),
-    );
-  }
-}
+     
+      body: ListView.builder(
+        itemCount: listMahasiswa.length,
+        itemBuilder: (context, index) {
+          final mahasiswa = listMahasiswa[index];
 
-// 2. EXTRACTED WIDGET
-// Memisahkan UI Item agar kode utama tidak berantakan
-class DaerahCard extends StatelessWidget {
-  final Daerah daerah;
-  final int index;
-
-  const DaerahCard({super.key, required this.daerah, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    // Menggunakan Card agar tampilan lebih menonjol (pop-out)
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Memilih: ${daerah.nama}'),
-              behavior: SnackBarBehavior.floating,
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              
+              leading: CircleAvatar(
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  mahasiswa.nama[0], 
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+              
+              title: Text(
+                mahasiswa.nama,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("NIM: ${mahasiswa.nim}"),
+                  Text(
+                    mahasiswa.jurusan,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey,
+              ),
+             
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Anda memilih: ${mahasiswa.nama}')),
+                );
+              },
             ),
           );
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: ListTile(
-            leading: CircleAvatar(
-              // Memberikan warna berbeda-beda berdasarkan index
-              backgroundColor:
-                  Colors.primaries[index % Colors.primaries.length],
-              foregroundColor: Colors.white,
-              child: Text(daerah.kode, style: const TextStyle(fontSize: 12)),
-            ),
-            title: Text(
-              daerah.nama,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text('Wilayah Prioritas ke-${index + 1}'),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.grey,
-            ),
-          ),
-        ),
       ),
     );
   }
